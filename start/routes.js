@@ -37,4 +37,7 @@ Route.group(() => {
   Route.post('/user/follow/:id', "UserController.follow");
   Route.post('/user/unfollow/:id', "UserController.unfollow");
 
+  // comments
+  Route.resource("comment", "CommentController").apiOnly().except(['index', 'show']);
+
 }).middleware(['auth:jwt']);

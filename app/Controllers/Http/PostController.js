@@ -14,7 +14,7 @@ class PostController {
 
     // later it has be filtered for only users that I follow
 
-    const posts = await Post.query().with("user").fetch();
+    const posts = await Post.query().with("user").with("comments").fetch();
 
     return posts;
   }
@@ -52,7 +52,7 @@ class PostController {
     const post = await Post.findOrFail(params.id);
 
     if(post.user_id !== auth.user.id) {
-      return response.status(401);
+      return response.status(400).json({ error: 'You can not update a post that is not yours.'})
     }
 
     post.description = data.description;
@@ -70,7 +70,7 @@ class PostController {
     const post = await Post.findOrFail(params.id);
 
     if(post.user_id !== auth.user.id) {
-      return response.status(401);
+      return response.status(400).json({ error: 'You can not delete a post that is not yours.'})
     }
 
     await post.delete();

@@ -1,9 +1,5 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
 const Post = use('App/Models/Post');
 
 /**
@@ -18,7 +14,7 @@ class PostController {
 
     // later it has be filtered for only users that I follow
 
-    const posts = await Post.all();
+    const posts = await Post.query().with("user").fetch();
 
     return posts;
   }
@@ -31,7 +27,7 @@ class PostController {
 
     const data = request.only(['content', 'description', 'type']);
 
-    const post = await Post.create({ user_id: auth.user.id, ...data })
+    const post = await Post.create({ user_id: auth.user.id, likes: { users: []}, ...data })
 
     return post;
   }
@@ -50,7 +46,7 @@ class PostController {
    * Update post details.
    * PUT or PATCH posts/:id
    */
-  async update ({ params, request, auth }) {
+  async update ({ params, request, auth, response }) {
     const data = request.only(['description']);
 
     const post = await Post.findOrFail(params.id);
@@ -59,7 +55,11 @@ class PostController {
       return response.status(401);
     }
 
-    await Post.update(post.id, data);
+    post.description = data.description;
+
+    post.save();
+
+    return post;
   }
 
   /**
@@ -80,9 +80,47 @@ class PostController {
    * Like a post
    * PUT posts/like/:id
    */
-  async like ({ params, request, auth }) {
+  async like ({ params, auth, response }) {
     const post = await Post.findOrFail(params.id);
+    var likes = post.likes;
 
+    console.log(likes.users.indexOf(auth.user.id))
+    if(likes.users.indexOf(auth.user.id) > -1) {
+      return response.status(401);
+    }
+
+    likes.users.push(auth.user.id);
+
+    post.likes = JSON.stringify(likes);
+
+    post.save();
+
+    return post;
+  }
+
+  /**
+   * Dislike a post
+   * PUT posts/dislike/:id
+   */
+  async dislike ({ params, auth, response }) {
+    const post = await Post.findOrFail(params.id);
+    var likes = post.likes;
+
+    if(likes.users.indexOf(auth.user.id) == -1) {
+      return response.status(401);
+    }
+
+    for(var i = 0; i < likes.users.length; i++) {
+      if(likes.users[i] === auth.user.id) {
+        likes.users.splice(i, 1);
+      }
+    }
+
+    post.likes = JSON.stringify(likes);
+
+    post.save();
+
+    return post;
   }
 }
 

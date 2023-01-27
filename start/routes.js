@@ -19,7 +19,7 @@ const { RouteResource } = require('@adonisjs/framework/src/Route/Manager');
 const Route = use('Route')
 
 Route.post('/auth', "AuthController.authenticate");
-Route.post('/users', "AuthController.register");
+Route.post('/register', "AuthController.register");
 
 Route.group(() => {
   Route.get('/', "AppController.index");
@@ -30,7 +30,10 @@ Route.group(() => {
   Route.put('/user/profile', "UserController.updateProfile");
 
   // posts
-
+  Route.resource("post", "PostController")
+  .apiOnly();
+  Route.put("post/like/:id", "PostController.like");
+  Route.put("post/dislike/:id", "PostController.dislike");
 
   // actions (like, follow, comment)
 

@@ -24,14 +24,14 @@ Route.post('/register', "AuthController.register");
 Route.group(() => {
   Route.get('/', "AppController.index");
 
-  // profile
-  Route.get('/user', "UserController.index");
-  Route.get('/user/profile', "UserController.getProfile");
-  Route.put('/user/profile', "UserController.updateProfile");
-
   // posts
   Route.resource("post", "PostController").apiOnly();
   Route.put("post/like/:id", "PostController.like");
   Route.put("post/dislike/:id", "PostController.dislike");
+
+  // user profile
+  Route.get('/user', "UserController.show");
+  Route.put('/user', "UserController.update");
+  Route.post('/user/changePassword', "UserController.changePassword");
 
 }).middleware(['auth:jwt']);

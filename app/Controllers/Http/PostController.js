@@ -84,9 +84,8 @@ class PostController {
     const post = await Post.findOrFail(params.id);
     var likes = post.likes;
 
-    console.log(likes.users.indexOf(auth.user.id))
-    if(likes.users.indexOf(auth.user.id) > -1) {
-      return response.status(401);
+    if(likes.users.indexOf(auth.user.id) > -1) { // if user already liked
+      return response.status(400).send({ error: 'You are already liking this post'});
     }
 
     likes.users.push(auth.user.id);
@@ -107,7 +106,7 @@ class PostController {
     var likes = post.likes;
 
     if(likes.users.indexOf(auth.user.id) == -1) {
-      return response.status(401);
+      return response.status(400).send({ error: 'You are already not liking this post'});
     }
 
     for(var i = 0; i < likes.users.length; i++) {

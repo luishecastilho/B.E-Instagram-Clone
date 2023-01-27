@@ -26,12 +26,15 @@ Route.group(() => {
 
   // posts
   Route.resource("post", "PostController").apiOnly();
-  Route.put("post/like/:id", "PostController.like");
-  Route.put("post/dislike/:id", "PostController.dislike");
+  Route.put("/post/like/:id", "PostController.like");
+  Route.put("/post/dislike/:id", "PostController.dislike");
 
   // user profile
   Route.get('/user', "UserController.show");
   Route.put('/user', "UserController.update");
   Route.post('/user/changePassword', "UserController.changePassword");
+
+  Route.post('/user/follow/:id', "UserController.follow");
+  Route.post('/user/unfollow/:id', "UserController.unfollow");
 
 }).middleware(['auth:jwt']);

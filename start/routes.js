@@ -30,11 +30,8 @@ Route.group(() => {
   Route.put('/user/profile', "UserController.updateProfile");
 
   // posts
-  Route.resource("post", "PostController")
-  .apiOnly();
+  Route.resource("post", "PostController").apiOnly();
   Route.put("post/like/:id", "PostController.like");
   Route.put("post/dislike/:id", "PostController.dislike");
-
-  // actions (like, follow, comment)
 
 }).middleware(['auth:jwt']);

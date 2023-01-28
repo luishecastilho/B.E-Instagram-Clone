@@ -8,8 +8,10 @@
 * Docker
 
 ## Start:
+
 * Create a database called: "instagram"
 * Create your .env file
 * Run "npm install"
 * Run "adonis migration:run"
-* And then, run 'npm start'
+* Run: 'docker build -t instagram .'
+* Run: 'docker-compose up'

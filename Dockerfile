@@ -1,25 +1,27 @@
+# Use the official Node.js image as the base image
 FROM node:lts-alpine
 
-RUN mkdir -p /home/apps/instagram-clone
+# Use the official PostgreSQL image as the database
+FROM postgres:14
 
-WORKDIR /home/apps/instagram-clone
+# Set the working directory
+WORKDIR /usr/src/app
 
+# Copy the package.json and package-lock.json files
 COPY package*.json ./
 
-RUN apk add --no-cache git
+RUN apt-get update && apt-get install -y npm
 
-COPY . /home/apps/instagram-clone/
+# Install dependencies
+RUN npm ci --only=production
 
-RUN chown -R node:node /home/apps
+RUN npm i -g @adonisjs/cli --unsafe-perm
 
-RUN npm ci
+# Copy the rest of the application code
+COPY . .
 
-RUN npm install
+# Expose the port that the AdonisJS application will run on
+EXPOSE 8000
 
-RUN npm install --global @adonisjs/cli
-
-RUN npm install pg
-
-USER node
-
-ENTRYPOINT ["npm", "start"]
+# Start the AdonisJS application and connect to the PostgreSQL database
+CMD ["adonis", "serve", "--dev", "--pg"]

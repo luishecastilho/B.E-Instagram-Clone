@@ -1,22 +1,22 @@
-version: "3"
-
+version: '3'
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/home/apps/instagram
+  web:
+    build: .
     ports:
-      - 3333:3333
-    depends_on:
-      - db
-
-  db:
-    image: postgres
-    restart: always
+      - "3333:3333"
     environment:
-      POSTGRES_DB: "instagram"
-      POSTGRES_HOST_AUTH_METHOD: "trust"
-      POSTGRES_DB_USER: "postgres"
-      POSTGRES_DB_PASSWORD: "postgres"
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=instagram
+    command: adonis migration:run
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=instagram

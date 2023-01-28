@@ -6,3 +6,10 @@
 * Adonis
 * Postgres
 * Docker
+
+## Start:
+* Create a database called: "instagram"
+* Create your .env file
+* Run "npm install"
+* Run "adonis migration:run"
+* And then, run 'npm start'

@@ -1,12 +1,25 @@
-FROM node:alpine
+FROM node:lts-alpine
 
-WORKDIR /usr/app
+RUN mkdir -p /home/apps/instagram-clone
+
+WORKDIR /home/apps/instagram-clone
 
 COPY package*.json ./
+
+RUN apk add --no-cache git
+
+COPY . /home/apps/instagram-clone/
+
+RUN chown -R node:node /home/apps
+
+RUN npm ci
+
 RUN npm install
 
-COPY . .
+RUN npm install --global @adonisjs/cli
 
-EXPOSE 3333
+RUN npm install pg
 
-CMD ["npm", "start"]
+USER node
+
+ENTRYPOINT ["npm", "start"]

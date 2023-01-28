@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home/apps/instagram
+    ports:
+      - 3333:3333
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: "instagram"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_DB_USER: "postgres"
+      POSTGRES_DB_PASSWORD: "postgres"
